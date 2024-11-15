@@ -14,9 +14,15 @@ class NewNewsScreen extends StatefulWidget {
 class _NewNewsScreenState extends State<NewNewsScreen> {
   TextEditingController titleController = TextEditingController();
   TextEditingController detailsController = TextEditingController();
+  late double screenwidth, screenheight;
 
   @override
   Widget build(BuildContext context) {
+    screenwidth = MediaQuery.of(context).size.width;
+    screenheight = MediaQuery.of(context).size.height;
+    // print(screenheight);
+    // print(screenwidth);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("New Newsletter"),
@@ -37,14 +43,17 @@ class _NewNewsScreenState extends State<NewNewsScreen> {
               const SizedBox(
                 height: 15,
               ),
-              TextField(
-                controller: detailsController,
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    hintText: "News Details"),
-                maxLines: 24,
+              SizedBox(
+                height: screenheight * 0.7,
+                child: TextField(
+                  controller: detailsController,
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      hintText: "News Details"),
+                  maxLines: screenheight ~/ 35,
+                ),
               ),
               const SizedBox(
                 height: 15,
@@ -56,9 +65,10 @@ class _NewNewsScreenState extends State<NewNewsScreen> {
                   },
                   minWidth: 400,
                   height: 50,
-                  color: Colors.purple[800],
-                  child: const Text("Insert",
-                      style: TextStyle(color: Colors.white))),
+                  color: const Color.fromARGB(197, 60, 118, 255),
+                  child: const Text(
+                    "Insert", style: TextStyle(color: Colors.white),
+                  )),
             ],
           ),
         ),
@@ -117,13 +127,14 @@ class _NewNewsScreenState extends State<NewNewsScreen> {
     );
   }
 
-   void insertNews() {
+  void insertNews() {
     String title = titleController.text;
     String details = detailsController.text;
-    http.post(Uri.parse("${Myconfig.servername}/memberlink/api/insert_news.php"),
+    http.post(
+        Uri.parse("${Myconfig.servername}/memberlink/api/insert_news.php"),
         body: {"title": title, "details": details}).then((response) {
-        print(response.statusCode);
-        print(response.body);
+      print(response.statusCode);
+      print(response.body);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data['status'] == "success") {
