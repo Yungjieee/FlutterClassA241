@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:my_member_link/models/news.dart';
+import 'package:http/http.dart' as http;
+import 'package:my_member_link/myconfig.dart';
 
 class EditNewsScreen extends StatefulWidget {
   final News news;
@@ -79,6 +83,62 @@ class _EditNewsScreenState extends State<EditNewsScreen> {
       ),
     );
   }
-  
-  void onUpdateNewsDialog() {}
+
+  void onUpdateNewsDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Update News ?"),
+            content: const Text("Are you sure you want to update this news?"),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    updateNews();
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Yes")),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("No")),
+            ],
+          );
+        });
+  }
+
+  void updateNews() {
+    String title = titleController.text;
+    String details = detailsController.text;
+    // News news = widget.news;
+    // news.newsTitle = title;
+    // news.newsDetails = details;
+    // news.newsDate = DateTime.now().toString();
+
+    http.post(
+        Uri.parse("${Myconfig.servername}/memberlink/api/update_news.php"),
+        body: {
+          "newsId": widget.news.newsId.toString(),
+          "title": title,
+          "details": details
+        }).then((response) {
+          print(response.body);
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['status'] == "success") {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Update Success"),
+            backgroundColor: Colors.green,
+          ));
+          Navigator.pop(context);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Update Failed"),
+            backgroundColor: Colors.red,
+          ));
+        }
+      }
+    });
+  }
 }
