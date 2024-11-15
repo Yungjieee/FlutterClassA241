@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:my_member_link/myconfig.dart';
 
 class NewNewsScreen extends StatefulWidget {
   const NewNewsScreen({super.key});
@@ -90,6 +94,7 @@ class _NewNewsScreenState extends State<NewNewsScreen> {
                 style: TextStyle(),
               ),
               onPressed: () {
+                insertNews();
                 Navigator.of(context).pop();
               },
             ),
@@ -110,5 +115,32 @@ class _NewNewsScreenState extends State<NewNewsScreen> {
         );
       },
     );
+  }
+
+   void insertNews() {
+    String title = titleController.text;
+    String details = detailsController.text;
+    http.post(Uri.parse("${Myconfig.servername}/memberlink/api/insert_news.php"),
+        body: {"title": title, "details": details}).then((response) {
+        print(response.statusCode);
+        print(response.body);
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['status'] == "success") {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Insert Success"),
+            backgroundColor: Colors.green,
+          ));
+          // Navigator.push(context,
+          //     MaterialPageRoute(builder: (content) => const MainScreen()));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Insert Failed"),
+            backgroundColor: Colors.red,
+          ));
+        }
+      }
+    });
   }
 }
