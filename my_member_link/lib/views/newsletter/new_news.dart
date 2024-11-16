@@ -28,49 +28,47 @@ class _NewNewsScreenState extends State<NewNewsScreen> {
         title: const Text("New Newsletter"),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              TextField(
-                controller: titleController,
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  hintText: "News Title"),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            SizedBox(
+              height: screenheight * 0.7,
+              child: TextField(
+                controller: detailsController,
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    hintText: "News Title"),
+                    hintText: "News Details"),
+                maxLines: screenheight ~/ 35,
               ),
-              const SizedBox(
-                height: 15,
-              ),
-              SizedBox(
-                height: screenheight * 0.7,
-                child: TextField(
-                  controller: detailsController,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      hintText: "News Details"),
-                  maxLines: screenheight ~/ 35,
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              MaterialButton(
-                  elevation: 10,
-                  onPressed: () {
-                    onInsertNewsDialog();
-                  },
-                  minWidth: 400,
-                  height: 50,
-                  color: const Color.fromARGB(197, 60, 118, 255),
-                  child: const Text(
-                    "Insert", style: TextStyle(color: Colors.white),
-                  )),
-            ],
-          ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            MaterialButton(
+                elevation: 10,
+                onPressed: () {
+                  onInsertNewsDialog();
+                },
+                minWidth: 400,
+                height: 50,
+                color: const Color.fromARGB(197, 60, 118, 255),
+                child: const Text(
+                  "Insert", style: TextStyle(color: Colors.white),
+                )),
+          ],
         ),
       ),
     );

@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_member_link/models/news.dart';
 import 'package:my_member_link/myconfig.dart';
-import 'package:my_member_link/views/edit_news.dart';
-import 'package:my_member_link/views/new_news.dart';
+import 'package:my_member_link/views/newsletter/edit_news.dart';
+import 'package:my_member_link/views/shared/my_drawer.dart';
+import 'package:my_member_link/views/newsletter/new_news.dart';
 import 'package:http/http.dart' as http;
 
 class MainScreen extends StatefulWidget {
@@ -53,13 +54,13 @@ class _MainScreenState extends State<MainScreen> {
               child: Text("Loading..."),
             )
           : Column(
-            children: [
-               Container(
+              children: [
+                Container(
                   alignment: Alignment.center,
                   child: Text("Page: $curpage/ Result: $numofresult"),
                 ),
-              Expanded(
-                child: ListView.builder(
+                Expanded(
+                  child: ListView.builder(
                     itemCount: newsList.length,
                     itemBuilder: (context, index) {
                       return Card(
@@ -74,7 +75,8 @@ class _MainScreenState extends State<MainScreen> {
                               Text(
                                 truncateString(
                                     newsList[index].newsTitle.toString(), 30),
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                               Text(
                                 df.format(DateTime.parse(
@@ -96,7 +98,7 @@ class _MainScreenState extends State<MainScreen> {
                       );
                     },
                   ),
-              ),
+                ),
                 SizedBox(
                   height: screenHeight * 0.05,
                   child: ListView.builder(
@@ -123,37 +125,9 @@ class _MainScreenState extends State<MainScreen> {
                     },
                   ),
                 ),
-            ],
-          ),
-      drawer: Drawer(
-        child: ListView(children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
+              ],
             ),
-            child: Text('Drawer Header'),
-          ),
-          ListTile(
-            onTap: () {},
-            title: const Text("Newsletter"),
-          ),
-          const ListTile(
-            title: Text("Events"),
-          ),
-          const ListTile(
-            title: Text("Members"),
-          ),
-          const ListTile(
-            title: Text("Vetting"),
-          ),
-          const ListTile(
-            title: Text("Payment"),
-          ),
-          const ListTile(
-            title: Text("Product"),
-          ),
-        ]),
-      ),
+      drawer: const MyDrawer(),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromARGB(197, 60, 118, 255),
         onPressed: () async {
@@ -170,7 +144,8 @@ class _MainScreenState extends State<MainScreen> {
 
   void loadNewsData() {
     http
-        .get(Uri.parse("${Myconfig.servername}/memberlink/api/load_news.php?pageno=$curpage"))
+        .get(Uri.parse(
+            "${Myconfig.servername}/memberlink/api/load_news.php?pageno=$curpage"))
         .then((response) {
       // log(response.body.toString());
       if (response.statusCode == 200) {
